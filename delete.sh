@@ -2,8 +2,11 @@
 
 # Удаляет контейнеры, но оставляет тома
 
-docker stop dnscrypt && docker rm dnscrypt
-docker-compose down
+sudo docker stop dnscrypt && sudo docker rm dnscrypt
+sudo docker-compose down
+
+rm prometheus.yml
+rm provisioning-prometheus.yml
 
 # удалить тома
-# sudo rm -rf volumes
+# sudo docker-compose down -v

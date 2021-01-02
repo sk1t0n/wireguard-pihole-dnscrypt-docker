@@ -1,63 +1,93 @@
-version: "3.8"
+version: "3"
 
 services:
-    wireguard:
-        image: linuxserver/wireguard:latest
-        container_name: $WIREGUARD_CONTAINER
-        cap_add:
-            - NET_ADMIN
-            - SYS_MODULE
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=$TZ
-            - SERVERURL=$SERVER_IP
-            - SERVERPORT=51820
-            - PEERS=$WIREGUARD_PEERS
-            - PEERDNS=auto
-            - INTERNAL_SUBNET=$WIREGUARD_INTERNAL_SUBNET
-        volumes:
-            - ./volumes/wireguard/config:/config
-            - /lib/modules:/lib/modules
-        ports:
-            - 51820:51820/udp
-        sysctls:
-            - net.ipv4.conf.all.src_valid_mark=1
-        restart: unless-stopped
-        networks:
-            wireguard:
-                ipv4_address: "${SUBNET}2"
-        depends_on:
-            - pihole
+  wireguard:
+    image: linuxserver/wireguard:latest
+    container_name: $WIREGUARD_CONTAINER
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$TZ
+      - SERVERURL=$SERVER_IP
+      - SERVERPORT=51820
+      - PEERS=$WIREGUARD_PEERS
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=$WIREGUARD_INTERNAL_SUBNET
+    volumes:
+      - ./volumes/wireguard/config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      network:
+        ipv4_address: "${SUBNET}2"
+    depends_on:
+      - pihole
 
-    pihole:
-        image: pihole/pihole:latest
-        container_name: $PIHOLE_CONTAINER
-        domainname: $PIHOLE_DOMAIN
-        hostname: pihole
-        ports:
-            - "${SERVER_IP}:53:53/tcp"
-            - "${SERVER_IP}:53:53/udp"
-            - "${PIHOLE_PORT}:80/tcp"
-        environment:
-            - ServerIP=$SERVER_IP
-            - TZ=$TZ
-            - WEBPASSWORD=$PIHOLE_PASSWORD
-            - DNS1=$PIHOLE_DNS1#53
-            - DNS2=$PIHOLE_DNS2
-        volumes:
-            - ./volumes/pihole/etc-pihole:/etc/pihole
-            - ./volumes/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
-        cap_add:
-            - NET_ADMIN
-        restart: unless-stopped
-        networks:
-            wireguard:
-                ipv4_address: "${SUBNET}3"
+  pihole:
+    image: pihole/pihole:latest
+    container_name: $PIHOLE_CONTAINER
+    domainname: $PIHOLE_DOMAIN
+    hostname: pihole
+    ports:
+      - "${SERVER_IP}:53:53/tcp"
+      - "${SERVER_IP}:53:53/udp"
+      - "${PIHOLE_PORT}:80/tcp"
+    environment:
+      - ServerIP=$SERVER_IP
+      - TZ=$TZ
+      - WEBPASSWORD=$PIHOLE_PASSWORD
+      - DNS1=127.0.0.1#53
+      - DNS2=$PIHOLE_DNS2
+      - DNSSEC=$DNSSEC
+    volumes:
+      - ./volumes/pihole/etc-pihole:/etc/pihole
+      - ./volumes/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      network:
+        ipv4_address: "${SUBNET}3"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: $GRAFANA_CONTAINER
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    volumes:
+      - ./provisioning-prometheus.yml:/etc/grafana/provisioning/datasources/provisioning-prometheus.yml
+    environment:
+      - GF_SECURITY_ADMIN_USER=$GRAFANA_ADMIN_USER
+      - GF_SECURITY_ADMIN_PASSWORD=$GRAFANA_ADMIN_PASSWORD
+    restart: unless-stopped
+    networks:
+      network:
+        ipv4_address: "${SUBNET}4"
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: $PROMETHEUS_CONTAINER
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    networks:
+      network:
+        ipv4_address: "${SUBNET}5"
 
 networks:
-    wireguard:
-        ipam:
-            driver: default
-            config:
-                - subnet: "${SUBNET}0/${SUBNET_MASK}"
+  network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "${SUBNET}0/${SUBNET_MASK}"

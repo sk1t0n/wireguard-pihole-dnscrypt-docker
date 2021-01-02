@@ -28,7 +28,8 @@
 Если занят 8000 порт, изменить значение `PIHOLE_PORT` на любой свободный порт (проверить командой `sudo netstat -lntup`)  
 При желании поменять доменные имена `DNSCRYPT_DOMAIN` и `PIHOLE_DOMAIN`  
 Задать количество клиентов для WireGuard, изменив значение переменной `WIREGUARD_PEERS`  
-Поменять при необходимости внутреннюю сеть Wireguard, изменив значение переменной `WIREGUARD_INTERNAL_SUBNET`
+Поменять при необходимости внутреннюю сеть Wireguard, изменив значение переменной `WIREGUARD_INTERNAL_SUBNET`  
+Также можно поменять имя пользователя и пароль для Grafana: `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
 
 ## Настройка DNS в Wireguard
 
