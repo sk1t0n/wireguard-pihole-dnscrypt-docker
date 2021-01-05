@@ -1,4 +1,2 @@
-# ignore volumes
 volumes/
-prometheus.yml
-provisioning-prometheus.yml
+Corefile
