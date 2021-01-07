@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# удаляет контейнеры вместе с томами
-docker-compose down -v
+# Удаление контейнеров вместе с томами
+sudo docker-compose down -v
 sudo rm -rf volumes
 sudo rm Corefile

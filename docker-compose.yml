@@ -40,10 +40,9 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - ServerIP=127.0.0.1
       - TZ=$TZ
       - WEBPASSWORD=$PIHOLE_PASSWORD
-      - DNS1=127.0.0.1#${DNSCRYPT_PORT}
+      - DNS1=${SUBNET}4#${DNSCRYPT_PORT}
       - DNS2=no
       - DNSSEC=$DNSSEC
     ports:

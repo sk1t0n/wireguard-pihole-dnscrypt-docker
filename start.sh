@@ -1,10 +1,9 @@
 #!/bin/sh
 
-
-# Добавляет переменные среды из .env-файла
+# Добавление переменных среды из .env-файла
 export $(egrep -v '^#' .env | xargs)
 
-# Создаёт файл конфигурации DNS для Wireguard
+# Создание файла конфигурации DNS для Wireguard
 if [ ! -f ./Corefile ]; then
   cat > ./Corefile <<EOL
 . {
@@ -13,5 +12,5 @@ if [ ! -f ./Corefile ]; then
 EOL
 fi
 
-# Загружает образы и запускает контейнеры
-docker-compose up
+# Загрузка образов и запуск контейнеров
+sudo docker-compose up -d

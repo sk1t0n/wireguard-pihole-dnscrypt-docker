@@ -36,9 +36,9 @@
 ## Example with both IPv4 and IPv6:
 ## listen_addresses = ['127.0.0.1:53', '[::1]:53']
 
-listen_addresses = ['127.0.0.1:5300']
+listen_addresses = ['0.0.0.0:5300']
 
-server_names = ['dnscrypt.pl']
+server_names = ['scaleway-fr']
 
 ## Maximum number of simultaneous client connections to accept
 
@@ -695,7 +695,7 @@ fragments_blocked = ['cisco', 'cisco-ipv6', 'cisco-familyshield', 'cisco-familys
 
 routes = [
 #    { server_name='example-server-1', via=['anon-example-1', 'anon-example-2'] },
-  { server_name='dnscrypt.pl', via=['anon-dnscrypt.one', 'anon-pwoss.org'] }
+  { server_name='scaleway-fr', via=['anon-ams-nl'] }
 ]
 
 

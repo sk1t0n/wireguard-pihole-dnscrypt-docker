@@ -1,4 +1,3 @@
 #!/bin/sh
 
-# Останавливает контейнеры
-docker-compose down
+sudo docker-compose down
